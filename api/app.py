@@ -5,7 +5,8 @@ app.config['MAX_CONTENT_LENGTH'] = 64 * 1024
 
 @app.get('/api/health')
 def health():
-    return jsonify(status='ok')
+    # TODO: student_id와 name을 본인의 학번과 이름으로 변경하세요.
+    return jsonify(status='ok', student_id='본인 학번', name='본인 이름')
 
 @app.errorhandler(413)
 def too_large(error):
