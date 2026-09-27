@@ -1,6 +1,6 @@
 # week5_workout · 캡스톤 소개 페이지 과제
 
-**Windows Docker Desktop과 PowerShell에서 nginx·Flask를 Compose로 실행합니다.** 제공된 API는 그대로 활용하고 본인의 소개 페이지와 Compose 설정을 완성합니다.
+**Windows Docker Desktop과 PowerShell에서 nginx·Flask를 Compose로 실행합니다.** 본인의 소개 페이지와 Compose 설정을 완성하고, health API에 본인 학번과 이름을 넣습니다.
 
 |구분|이름·주소|
 |---|---|
@@ -54,6 +54,20 @@ compose.yaml의 TODO를 완성합니다. Flask·nginx Dockerfile과 API 코드�
 
 두 이미지 이름은 `week5_03`과 `week5_04`, 컨테이너 이름은 `week5_api02`와 `week5_web02`입니다. 최상위 data 볼륨은 실제 이름 `week5_data02`로 제공됩니다. nginx는 `week5_api02:5000`으로 API 요청을 전달합니다.
 
+### 학번·이름 등록
+
+`api/app.py`의 `health()`에서 **`student_id`는 본인 학번, `name`은 본인 이름**으로 변경합니다. 학번은 문자열로 작성하고, `status: ok`는 유지합니다.
+
+```json
+{
+  "status": "ok",
+  "student_id": "본인 학번",
+  "name": "본인 이름"
+}
+```
+
+실행 후 `http://localhost:8080/api/health`에서 본인 정보가 나오는지 확인합니다. 이미 실행 중이었다면 `docker compose up -d --build api`와 `docker compose restart nginx`으로 수정 내용을 반영합니다.
+
 ## 4. 실행과 확인
 
 ```powershell
@@ -63,7 +77,7 @@ docker compose ps
 curl.exe -i http://localhost:8080/api/health
 ```
 
-HTTP 200과 `status: ok`를 확인한 뒤 `http://localhost:8080`을 엽니다.
+HTTP 200, `status: ok`, **본인 학번(`student_id`)과 이름(`name`)**을 확인한 뒤 `http://localhost:8080`을 엽니다.
 
 1. 본인의 소개 내용이 표시되는지 확인합니다.
 2. **소개 내용 다운로드**로 받은 project-intro.md를 열고 화면의 소개·기능·기술 내용과 비교합니다.
@@ -87,7 +101,8 @@ Flask가 시작한 뒤 마지막 명령을 실행하고 재생성 전후 수치�
 
 HTML·CSS 수정 후 `docker compose up -d --build nginx`으로 웹 이미지를 다시 빌드합니다. API 수정 후에는 `docker compose up -d --build api`, `docker compose restart nginx`을 실행합니다.
 
-- 본인 GitHub 저장소에 HTML·CSS·Compose 파일 반영
+- 본인 GitHub 저장소에 HTML·CSS·Compose 파일과 수정한 `api/app.py` 반영
+- `/api/health`에서 본인 학번·이름이 표시되는 응답 화면
 - 소개 페이지와 실제 다운로드 파일
 - 조회수 증가·다시 확인·컨테이너 재생성 후 유지 결과
 - 두 서비스가 실행 중인 상태
@@ -98,7 +113,7 @@ HTML·CSS 수정 후 `docker compose up -d --build nginx`으로 웹 이미지를
 
 |요청|역할|
 |---|---|
-|GET /api/health|기본 연결 확인|
+|GET /api/health|기본 연결 확인 및 본인 학번·이름 반환|
 |POST /api/download|현재 화면 내용으로 Markdown 파일 생성|
 |POST /api/views|조회수 1 증가|
 |GET /api/views|증가 없이 현재 값 확인|
